@@ -8,6 +8,8 @@
     --rh-accent-green: #00c805; /* Robinhood green */
     --rh-accent-red: #ff5000; /* Robinhood red (optional) */
     --rh-input-bg: #2a2e31; /* Input field background */
+    --ad-banner-bg: var(--rh-accent-green); /* Use accent green for banner */
+    --ad-banner-text: #000000; /* Black text for contrast on green */
 }
 
 body {
@@ -19,23 +21,29 @@ body {
     line-height: 1.6;
 }
 
-.advertisement {
-    background-color: #ffeb3b; /* Yellow background */
-    color: #333;
-    padding: 10px;
+/* Advertisement Banner Styles */
+.ad-banner {
+    background-color: var(--ad-banner-bg);
+    color: var(--ad-banner-text);
     text-align: center;
-    margin-bottom: 20px;
+    padding: 0.5rem 1rem; /* Slightly smaller padding */
     font-weight: bold;
 }
 
-.advertisement a {
-    color: #0056b3; /* Blue link color */
-    text-decoration: none;
+.ad-banner p {
+    margin: 0; /* Remove default paragraph margin */
 }
 
-.advertisement a:hover {
-    text-decoration: underline;
+.ad-banner a {
+    color: var(--ad-banner-text); /* Match banner text color */
+    text-decoration: none; /* Remove underline */
+    display: block; /* Make the link fill the banner */
 }
+
+.ad-banner a:hover {
+    text-decoration: underline; /* Add underline on hover */
+}
+
 
 header {
     background-color: var(--rh-card-bg);
@@ -168,5 +176,9 @@ footer {
     }
     .etf-list-container {
         grid-template-columns: 1fr; /* Stack cards on small screens */
+    }
+    /* Adjust banner text size slightly on smaller screens if needed */
+    .ad-banner {
+        font-size: 0.9rem;
     }
 }
