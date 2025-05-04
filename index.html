@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YieldSearch - High Distribution ETFs</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>YieldSearch</h1>
+        <p>Discover High Distribution & Option Strategy ETFs</p>
+    </header>
+
+    <main>
+        <div class="search-filters">
+            <input type="text" id="search-name" placeholder="Search by Ticker or Name...">
+            <select id="filter-exposure">
+                <option value="">All Exposures</option>
+                <!-- Options will be populated by JS -->
+            </select>
+            <select id="filter-goal">
+                <option value="">All Goals</option>
+                <!-- Options will be populated by JS -->
+            </select>
+            <select id="filter-frequency">
+                <option value="">All Frequencies</option>
+                <option value="Monthly">Monthly</option>
+                <option value="Weekly">Weekly</option>
+            </select>
+    <select id="filter-issuer">
+        <option value="">All Issuers</option>
+        <!-- Options will be populated by JavaScript -->
+    </select>
+        </div>
+
+        <div id="etf-list" class="etf-list-container">
+            <!-- ETF data will be loaded here by JS -->
+            <p>Loading ETFs...</p>
+        </div>
+    </main>
+
+    <footer>
+        <p>Data manually curated. Always do your own research.</p>
+    </footer>
+
+<script src="etfData.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
