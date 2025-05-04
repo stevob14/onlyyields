@@ -10,7 +10,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Helper function to consolidate exposure categories ---
     function getConsolidatedExposure(originalExposure) {
         const lowerExposure = originalExposure.toLowerCase();
+        const treasuryTerms = ['treasury', 't-bill', 'aggregate bond'];
+        const bondTerms = ['bond', 'fixed income'];
 
+        // Check for treasury-specific exposures first
+        if (treasuryTerms.some(term => lowerExposure.includes(term))) {
+            return "Fixed Income / Treasuries";
+        }
+        // Check for other bond-related exposures
+        if (bondTerms.some(term => lowerExposure.includes(term)) && !treasuryTerms.some(term => lowerExposure.includes(term))) {
+            return "Fixed Income / Bonds";
+        }
         if (lowerExposure.includes('s&p 500') || lowerExposure.includes('nasdaq') || lowerExposure.includes('russell') || lowerExposure.includes('dow jones')) {
             return "US Equity Indices";
         }
@@ -19,9 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (lowerExposure.includes('sector') || lowerExposure.includes('thematic') || lowerExposure.includes('magnificent') || lowerExposure.includes('ai & tech') || lowerExposure.includes('crypto industry') || lowerExposure.includes('semiconductor') || lowerExposure.includes('health care')) {
             return "Sector / Thematic";
-        }
-        if (lowerExposure.includes('bond') || lowerExposure.includes('treasury') || lowerExposure.includes('fixed income')) {
-            return "Fixed Income / Treasuries";
         }
         if (lowerExposure.includes('gold') || lowerExposure.includes('oil') || lowerExposure.includes('commodities') || lowerExposure.includes('resources')) {
             return "Commodities / Resources";
