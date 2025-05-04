@@ -19,6 +19,24 @@ body {
     line-height: 1.6;
 }
 
+.advertisement {
+    background-color: #ffeb3b; /* Yellow background */
+    color: #333;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.advertisement a {
+    color: #0056b3; /* Blue link color */
+    text-decoration: none;
+}
+
+.advertisement a:hover {
+    text-decoration: underline;
+}
+
 header {
     background-color: var(--rh-card-bg);
     padding: 1rem 2rem;
