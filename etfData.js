@@ -938,14 +938,14 @@ const etfData = [
         website: "https://www.kurvinvest.com/etf/msfy/"
     },
     {
-        ticker: "NVLP",
+        ticker: "NFLP",
         name: "Kurv Yield Premium Strategy Netflix (NFLX) ETF",
         issuer: "Kurv",
         exposure: "Individual Stock (NFLX)",
         goal: "Income/Exposure",
         strategy: "Seeks to provide current income while maintaining the opportunity for exposure to the share price of Netflix, Inc., subject to a limit on potential investment gains.",
         distributionFrequency: "Monthly",
-        website: "https://www.kurvinvest.com/etf/nvlx/"
+        website: "https://www.kurvinvest.com/etf/nflp/"
     },
     {
         ticker: "AMZP",
