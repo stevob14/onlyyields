@@ -183,11 +183,14 @@ footer {
     background-color: var(--rh-card-bg);
     margin: 10% auto; /* 10% from the top and centered */
     padding: 20px;
+    padding-bottom: 30px; /* Add specific bottom padding */
     border: 1px solid var(--rh-border-color);
     border-radius: 8px;
     width: 80%; /* Could be more or less, depending on screen size */
     max-width: 900px; /* Maximum width */
     position: relative;
+    overflow-y: auto; /* Add this to enable vertical scrolling if content overflows */
+    max-height: 80vh; /* Optional: Limit the max height relative to viewport height */
 }
 
 .close-button {
@@ -207,7 +210,7 @@ footer {
 }
 
 #tradingview-widget-container {
-    height: 500px; /* Adjust height as needed */
+    height: 600px; /* Increase container height */
 }
 
 .modal-content h2 {

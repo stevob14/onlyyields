@@ -299,31 +299,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p><a href="${etf.website}" target="_blank" rel="noopener noreferrer">Visit Website</a></p>
             `;
 
-            // --- Add Click Listener for Chart Modal --- 
+            // --- Add Click Listener for Symbol Profile Modal --- 
             card.addEventListener('click', (event) => {
                 // Prevent clicks on the website link from triggering the modal
                 if (event.target.tagName === 'A') {
                     return;
                 }
 
-                // Clear previous widget
+                // Clear previous widget content
                 widgetContainer.innerHTML = ''; 
 
-                // Create new TradingView Widget
-                new TradingView.widget({
-                    "width": "100%", // Make width responsive
-                    "height": 400,   // Adjust height as needed
-                    "symbol": etf.ticker, // Use the clicked ETF's ticker
-                    "interval": "D",
-                    "timezone": "Etc/UTC",
-                    "theme": "dark", // Changed from "light" to "dark"
-                    "style": "1",
-                    "locale": "en",
-                    "toolbar_bg": "#1c1f21", // Match card background color
-                    "enable_publishing": false,
-                    "allow_symbol_change": true,
-                    "container_id": "tradingview-widget-container"
-                });
+                // Create the script tag for the Symbol Profile widget
+                const script = document.createElement('script');
+                script.type = 'text/javascript';
+                script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-symbol-profile.js'; // <-- Use Symbol Profile script
+                script.async = true;
+
+                // Configuration object for the Symbol Profile widget
+                const widgetConfig = {
+                    "width": "100%",
+                    "height": "100%", // Set widget height to fill container
+                    "isTransparent": false,
+                    "colorTheme": "dark",
+                    "symbol": etf.ticker, // Dynamic symbol
+                    "locale": "en"
+                };
+
+                // Embed the configuration JSON inside the script tag
+                script.innerHTML = JSON.stringify(widgetConfig);
+
+                // Append the script to the container - this will load the widget
+                widgetContainer.appendChild(script);
+
+                // Optional: Add copyright if the script doesn't automatically
+                // const copyrightDiv = document.createElement('div');
+                // copyrightDiv.className = 'tradingview-widget-copyright';
+                // copyrightDiv.innerHTML = '<a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a>';
+                // widgetContainer.appendChild(copyrightDiv); // Append after the script
 
                 // Show the modal
                 modal.style.display = "block";
