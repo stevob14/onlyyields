@@ -85,8 +85,9 @@ main {
     color: var(--rh-text-primary);
     border-radius: 4px;
     font-size: 1rem;
-    /* flex-grow: 1; Removed to prevent issues in column layout */
+    flex-grow: 1; /* Allow items to grow and fill available space */
     min-width: 150px; /* Minimum width for filters */
+    box-sizing: border-box; /* Ensure padding/border are included in width calculation */
 }
 
 .search-filters input[type="text"]::placeholder {
@@ -109,6 +110,7 @@ main {
     border-radius: 8px;
     padding: 1.5rem;
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    cursor: pointer; /* Indicate it's clickable */
 }
 
 .etf-card:hover {
@@ -161,16 +163,63 @@ footer {
     border-top: 1px solid var(--rh-border-color);
 }
 
+/* Chart Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: var(--rh-card-bg);
+    margin: 10% auto; /* 10% from the top and centered */
+    padding: 20px;
+    border: 1px solid var(--rh-border-color);
+    border-radius: 8px;
+    width: 80%; /* Could be more or less, depending on screen size */
+    max-width: 900px; /* Maximum width */
+    position: relative;
+}
+
+.close-button {
+    color: var(--rh-text-secondary);
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: var(--rh-text-primary);
+    text-decoration: none;
+}
+
+#tradingview-widget-container {
+    height: 500px; /* Adjust height as needed */
+}
+
+.modal-content h2 {
+    color: var(--rh-accent-green);
+    margin-top: 0;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .search-filters {
-        flex-direction: column;
+        flex-direction: column; /* Stack filters vertically */
     }
-    .search-filters input[type="text"],
-    .search-filters select {
-        width: 100%; /* Make filters take full width in column layout */
-        box-sizing: border-box; /* Include padding and border in the element's total width */
-    }
+    /* No need to set width: 100% here anymore, flex-grow handles it in column layout too */
     main {
         padding: 1rem;
     }

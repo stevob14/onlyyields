@@ -22,8 +22,8 @@
 <body>
     <div class="ad-banner">
         <p>
-            <a href="https://join.robinhood.com/stephec1028" target="_blank" rel="noopener noreferrer">
-                Get up to $200 in FREE stock when you open a new account with Robinhood!
+            <a id="ad-link" href="#" target="_blank" rel="noopener noreferrer">
+                <!-- Ad content will be loaded by script.js -->
             </a>
         </p>
     </div>
@@ -63,5 +63,17 @@
 
     <script src="etfData.js"></script>
     <script src="script.js"></script>
+
+    <!-- TradingView Widget Script -->
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+
+    <!-- Chart Modal Structure -->
+    <div id="chart-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>TradingView Chart</h2>
+            <div id="tradingview-widget-container"></div>
+        </div>
+    </div>
 </body>
 </html>
