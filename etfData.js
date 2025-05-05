@@ -1149,7 +1149,7 @@ const etfData = [
         "goal": "Income and Capital Appreciation",
         "strategy": "Actively managed ETF that seeks to provide current income while maintaining prospects for capital appreciation through a dynamic options overwrite strategy on the Nasdaq-100 Index.",
         "distributionFrequency": "Monthly",
-        "website": "https://www.gsam.com/content/gsam/us/en/advisors/fund-center/etf-fund-finder/goldman-sachs-nasdaq-100-core-premium-income-etf.html"
+        "website": "https://am.gs.com/en-us/advisors/funds/detail/PV105259/38149W630/goldman-sachs-nasdaq-100-premium-income-etf"
     },
     {
         "ticker": "GPIX",
@@ -1159,6 +1159,67 @@ const etfData = [
         "goal": "Income and Capital Appreciation",
         "strategy": "Actively managed ETF that seeks to provide current income while maintaining prospects for capital appreciation through a dynamic options overwrite strategy on the S&P 500 Index.",
         "distributionFrequency": "Monthly",
-        "website": "https://www.gsam.com/content/gsam/us/en/advisors/fund-center/etf-fund-finder/goldman-sachs-sp-500-core-premium-income-etf.html"
+        "website": "https://am.gs.com/en-us/advisors/funds/detail/PV105258/38149W622/goldman-sachs-s-p-500-premium-income-etf"
+    },
+    // --- iShares ETFs ---
+    {
+        ticker: "TLTW",
+        name: "iShares 20+ Year Treasury Bond BuyWrite Strategy ETF",
+        issuer: "iShares",
+        exposure: "Treasuries",
+        goal: "Income",
+        strategy: "Actively managed ETF that seeks to generate income through a buy-write (covered call) strategy on the iShares 20+ Year Treasury Bond ETF (TLT).",
+        distributionFrequency: "Monthly",
+        website: "https://www.ishares.com/us/products/329118/ishares-20+-year-treasury-bond-buywrite-strategy-etf"
+    },
+    {
+        ticker: "BALI",
+        name: "iShares Advantage Large Cap Income ETF",
+        issuer: "iShares",
+        exposure: "US Equity Indices",
+        goal: "Income",
+        strategy: "Actively managed ETF seeking current income by investing in large-cap U.S. stocks and utilizing an options strategy.",
+        distributionFrequency: "Monthly",
+        website: "https://www.ishares.com/us/products/333207/ishares-advantage-large-cap-income-etf"
+    },
+    {
+        ticker: "LQDW",
+        name: "iShares Investment Grade Corporate Bond BuyWrite Strategy ETF",
+        issuer: "iShares",
+        exposure: "Fixed Income",
+        goal: "Income",
+        strategy: "Actively managed ETF that seeks to generate income through a buy-write (covered call) strategy on the iShares iBoxx $ Investment Grade Corporate Bond ETF (LQD).",
+        distributionFrequency: "Monthly",
+        website: "https://www.ishares.com/us/products/329120/ishares-investment-grade-corporate-bond-buywrite-strategy-etf"
+    },
+    {
+        ticker: "HYGW",
+        name: "iShares High Yield Corporate Bond BuyWrite Strategy ETF",
+        issuer: "iShares",
+        exposure: "Fixed Income",
+        goal: "Income",
+        strategy: "Actively managed ETF that seeks to generate income through a buy-write (covered call) strategy on the iShares iBoxx $ High Yield Corporate Bond ETF (HYG).",
+        distributionFrequency: "Monthly",
+        website: "https://www.ishares.com/us/products/329119/ishares-high-yield-corporate-bond-buywrite-strategy-etf"
+    },
+    {
+        ticker: "IVVW",
+        name: "iShares S&P 500 BuyWrite ETF",
+        issuer: "iShares",
+        exposure: "US Equity Indices",
+        goal: "Income",
+        strategy: "Actively managed ETF that seeks to generate income through a buy-write (covered call) strategy on the S&P 500 Index.",
+        distributionFrequency: "Monthly",
+        website: "https://www.ishares.com/us/products/336267/ishares-s-p-500-buywrite-etf"
+    },
+    {
+        ticker: "IWMW",
+        name: "iShares Russell 2000 BuyWrite ETF",
+        issuer: "iShares",
+        exposure: "US Equity Indices",
+        goal: "Income",
+        strategy: "Actively managed ETF that seeks to generate income through a buy-write (covered call) strategy on the Russell 2000 Index.",
+        distributionFrequency: "Monthly",
+        website: "https://www.ishares.com/us/products/336263/ishares-russell-2000-buywrite-etf"
     }
 ];
