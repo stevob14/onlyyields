@@ -136,6 +136,9 @@ main {
     margin: 0.5rem 0;
     color: var(--rh-text-secondary);
     font-size: 0.95rem;
+    word-break: normal; /* Ensure default word breaking */
+    overflow-wrap: normal; /* Ensure default wrapping behavior */
+    white-space: normal; /* Explicitly set default whitespace handling */
 }
 
 .etf-card p strong {

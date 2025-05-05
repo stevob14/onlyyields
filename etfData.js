@@ -980,24 +980,14 @@ const etfData = [
     },
     // --- Tapp Alpha ---
     {
-        ticker: "OVOL",
-        name: "TAPP Alpha Tactical Overlay ETF",
-        issuer: "Tapp Alpha",
-        exposure: "S&P 500",
-        goal: "Income/Risk Management",
-        strategy: "Actively managed tactical options overlay strategy on the S&P 500. Uses proprietary volatility signals (OVIX) to dynamically adjust long/short positions in SPX call and put options for income generation and risk mitigation.",
-        distributionFrequency: "Monthly",
-        website: "https://www.tappalphafunds.com/ovol/"
-    },
-    {
         ticker: "TSPY",
         name: "TappAlpha SPY Growth & Daily Income ETF",
         issuer: "Tapp Alpha",
         exposure: "S&P 500 (SPY)",
         goal: "Income/Growth",
-        strategy: "Seeks current income while maintaining prospects for capital appreciation. The Fund’s secondary investment objective is to seek exposure to the performance of the SPDR S&P 500 ETF Trust (“SPY”) , subject to a limit on potential investment gains.",
+        strategy: "Seeks current income while maintaining prospects for capital appreciation. The Fund’s secondary investment objective is to seek exposure to the performance of the SPDR S&P 500 ETF Trust (“SPY”), subject to a limit on potential investment gains.",
         distributionFrequency: "Monthly",
-        website: "https://www.tappalphafunds.com/tspy/"
+        website: "https://www.tappalphafunds.com/"
     },
     // --- REX Shares ---
     {

@@ -286,15 +286,15 @@ document.addEventListener('DOMContentLoaded', () => {
         filteredETFs.forEach(etf => {
             const card = document.createElement('div');
             card.className = 'etf-card';
-            // Ensure strategy is a string before calling replace, provide fallback
-            const strategyText = typeof etf.strategy === 'string' ? etf.strategy.replace(/\. /g, '.<br>') : (etf.strategy || '');
+            // Use strategy text directly without replacing periods with line breaks
+            const strategyText = etf.strategy || ''; // Use the strategy text as is, or empty string if undefined
             card.innerHTML = `
                 <h2>${etf.ticker}</h2>
                 <p>${etf.name}</p>
                 <p><strong>Issuer:</strong> ${etf.issuer}</p>
                 <p><strong>Exposure:</strong> ${etf.exposure}</p>
                 <p><strong>Goal:</strong> ${etf.goal}</p>
-                <p><strong>Strategy:</strong> ${strategyText}</p>
+                <p><strong>Strategy:</strong> ${strategyText}</p> 
                 <p><strong>Frequency:</strong> ${etf.distributionFrequency}</p>
                 <p><a href="${etf.website}" target="_blank" rel="noopener noreferrer">Visit Website</a></p>
             `;
