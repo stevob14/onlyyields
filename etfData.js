@@ -898,14 +898,14 @@ const etfData = [
     },
     // --- Kurv ETFs ---
     {
-        ticker: "KVOL",
-        name: "Kurv Volatility Premium ETF",
+        ticker: "KQQQ",
+        name: "Kurv Technology Titans Select (KQQQ) ETF",
         issuer: "Kurv",
-        exposure: "Volatility (VIX Futures)",
-        goal: "Income/Volatility Exposure",
-        strategy: "Seeks to generate income by selling short-term VIX futures call and put options (strangles or straddles) while potentially holding longer-term VIX futures for hedging.",
+        exposure: "Technology Growth Stocks",
+        goal: "Income/Growth",
+        strategy: "Kurv Technology Titans Select ETF seeks to maximize total return by actively managing a portfolio with concentrated exposure to high-conviction technology titans while, at the same time, generating potentially tax-efficient income.",
         distributionFrequency: "Monthly",
-        website: "https://www.kurvinvest.com/etf/kvol/"
+        website: "https://www.kurvinvest.com/etf/kqqq/"
     },
     {
         ticker: "AAPY",
