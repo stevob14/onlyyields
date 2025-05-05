@@ -17,6 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
         {
             url: "https://a.webull.com/iHwte0AKHLHI3C70Xf",
             text: "Get up to 20 FREE stocks when you open a new account with Webull!"
+        },
+        {
+            url: "https://coinbase.com/join/MG2TWZF", // Added Coinbase ad
+            text: "Get $20 in BTC after your first trade of $20 or more on Coinbase!"
         }
     ];
 
