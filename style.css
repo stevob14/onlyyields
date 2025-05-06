@@ -98,6 +98,47 @@ main {
     cursor: pointer;
 }
 
+/* Active Filter Tags */
+.active-filters-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    padding: 0.5rem 0;
+}
+
+.filter-tag {
+    display: flex;
+    align-items: center;
+    background-color: var(--rh-card-bg);
+    border: 1px solid var(--rh-border-color);
+    border-radius: 100px; /* Pill shape */
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+    color: var(--rh-text-primary);
+    margin-bottom: 0.25rem; /* Add some bottom margin for better spacing */
+}
+
+.filter-tag-category {
+    color: var(--rh-text-secondary);
+    margin-right: 0.25rem;
+}
+
+.filter-tag-remove {
+    margin-left: 0.5rem;
+    cursor: pointer;
+    color: var(--rh-text-secondary);
+    font-weight: bold;
+    font-size: 1rem; /* Reverted from 1.2rem back to 1rem */
+    transition: color 0.2s ease;
+    padding: 0; /* Removed the added padding */
+    line-height: normal; /* Reverted to normal line height */
+}
+
+.filter-tag-remove:hover {
+    color: var(--rh-accent-green);
+}
+
 .etf-list-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid */

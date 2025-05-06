@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const issuerFilter = document.getElementById('filter-issuer');
     const etfListContainer = document.getElementById('etf-list');
     const adLink = document.getElementById('ad-link'); // Get the ad link element
+    const activeFiltersContainer = document.getElementById('active-filters'); // Get the active filters container
 
     // --- Advertisement Data ---
     const advertisements = [
@@ -239,6 +240,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedFrequency = frequencyFilter.value;
         const selectedIssuer = issuerFilter ? issuerFilter.value : "";
 
+        // Update filter tags before filtering ETFs to ensure they're always shown
+        updateFilterTags();
+
         const filteredETFs = etfData.filter(etf => {
             const nameMatch = etf.name.toLowerCase().includes(searchTerm) || etf.ticker.toLowerCase().includes(searchTerm);
             
@@ -346,7 +350,90 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        updateFilterTags(); // Update filter tags whenever the list is rendered
+
     } // End of renderETFList function
+
+    // --- Function to create and update filter tags ---
+    function updateFilterTags() {
+        activeFiltersContainer.innerHTML = ''; // Clear existing tags
+        
+        // Get current filter values
+        const searchValue = searchInput.value.trim();
+        const exposureValue = exposureFilter.value;
+        const goalValue = goalFilter.value;
+        const frequencyValue = frequencyFilter.value;
+        const issuerValue = issuerFilter ? issuerFilter.value : '';
+        
+        // Create tag for search term
+        if (searchValue) {
+            createFilterTag('Search', searchValue, () => {
+                searchInput.value = '';
+                renderETFList();
+            });
+        }
+        
+        // Create tag for exposure filter
+        if (exposureValue) {
+            createFilterTag('Exposure', exposureValue, () => {
+                exposureFilter.value = '';
+                renderETFList();
+            });
+        }
+        
+        // Create tag for goal filter
+        if (goalValue) {
+            createFilterTag('Goal', goalValue, () => {
+                goalFilter.value = '';
+                renderETFList();
+            });
+        }
+        
+        // Create tag for frequency filter
+        if (frequencyValue) {
+            createFilterTag('Frequency', frequencyValue, () => {
+                frequencyFilter.value = '';
+                renderETFList();
+            });
+        }
+        
+        // Create tag for issuer filter
+        if (issuerValue) {
+            createFilterTag('Issuer', issuerValue, () => {
+                issuerFilter.value = '';
+                renderETFList();
+            });
+        }
+    }
+    
+    // --- Function to create a single filter tag ---
+    function createFilterTag(category, value, removeCallback) {
+        const tag = document.createElement('div');
+        tag.className = 'filter-tag';
+        
+        const categorySpan = document.createElement('span');
+        categorySpan.className = 'filter-tag-category';
+        categorySpan.textContent = category + ':';
+        
+        const valueSpan = document.createElement('span');
+        valueSpan.className = 'filter-tag-value';
+        valueSpan.textContent = value;
+        
+        const removeButton = document.createElement('span');
+        removeButton.className = 'filter-tag-remove';
+        removeButton.textContent = '×'; // Unicode multiplication sign as the "x"
+        removeButton.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent event bubbling
+            removeCallback();
+            updateFilterTags();
+        });
+        
+        tag.appendChild(categorySpan);
+        tag.appendChild(valueSpan);
+        tag.appendChild(removeButton);
+        
+        activeFiltersContainer.appendChild(tag);
+    }
 
     // --- Event Listeners ---
     searchInput.addEventListener('input', renderETFList);
