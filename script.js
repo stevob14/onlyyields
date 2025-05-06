@@ -34,31 +34,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- Helper function to consolidate exposure categories (REVISED LOGIC V7 - Using Strategy) ---
+    // --- Helper function to consolidate exposure categories (REVISED LOGIC V9 - Multi-category, No Multi-Asset) ---
     function getConsolidatedExposure(originalExposure, originalStrategy) {
-        // Combine exposure and strategy for broader keyword matching
-        const combinedText = `${originalExposure || ''} ${originalStrategy || ''}`.toLowerCase().trim();
+        const categories = new Set();
+        const primaryExposureText = (originalExposure || '').toLowerCase().trim();
+        const strategyText = (originalStrategy || '').toLowerCase().trim();
 
-        if (!combinedText) {
-            return "Other"; // Handle cases where both are empty/invalid
-        }
-
-        // --- Define Keyword Sets (Keep existing sets) ---
-        const multiAssetTerms = ['multi-asset', 'equity and fixed income', 'balanced', 'asset allocation'];
+        // Define Keyword Sets
+        // const multiAssetTerms = ['multi-asset', 'equity and fixed income', 'balanced', 'asset allocation']; // Removed this line
         const fundOfFundsTerms = ['fund of funds', 'multiple etfs', 'five yieldmax etfs', 'etf portfolio', 'etf of etfs'];
-        const cryptoTerms = ['crypto', 'bitcoin', 'ether', 'digital asset', 'ethereum', 'cryptocurrency', 'blockchain', 'crypto industry'];
+        const cryptoTerms = ['crypto', 'bitcoin', 'ether', 'digital asset', 'ethereum', 'cryptocurrency', 'blockchain']; // Removed 'crypto industry' for broader crypto match
         const volatilityTerms = ['volatility', 'vix'];
         const commodityTerms = ['gold', 'silver', 'oil', 'natural gas', 'commodities', 'metals', 'agriculture', 'resources'];
-        const globalIntlEquityTerms = ['global equity', 'international equity', 'emerging markets', 'developed markets', 'world equity', 'ex-us', 'acwi'];
+        const globalIntlEquityTerms = ['global equity', 'international equity', 'emerging markets', 'developed markets', 'world equity', 'ex-us', 'acwi', 'international'];
         const usEquityIndexTerms = ['s&p 500', 'nasdaq', 'russell', 'dow jones', 'us equity index', 'large cap', 'mid cap', 'small cap', 'total stock market'];
-        const sectorThematicTerms = ['sector', 'thematic', 'magnificent', 'ai', 'tech', 'semiconductor', 'health care', 'energy', 'financials', 'utilities', 'real estate', 'infrastructure', 'clean energy', 'biotech'];
+        const sectorThematicTerms = ['sector', 'thematic', 'magnificent', 'ai', 'tech', 'semiconductor', 'health care', 'energy', 'financials', 'utilities', 'real estate', 'infrastructure', 'clean energy', 'biotech', 'crypto industry']; // Added 'crypto industry' here
         const generalEquityTerms = ['equity', 'stock', 'shares'];
-        // REVISED Regex for Individual Stocks: Looks for SYMBOL Name, Name (SYMBOL), or just SYMBOL (if short exposure)
-        // 1. `^[A-Z]{1,5}$`: Matches if exposure is ONLY a 1-5 letter uppercase symbol.
-        // 2. `^[A-Z]{1,5}\s+[^()]+$`: Matches SYMBOL Name (e.g., AAPL Apple).
-        // 3. `^[^()]+\s+\([A-Z]{1,5}\)$`: Matches Name (SYMBOL) (e.g., Apple (AAPL)).
-        const individualStockPattern = /^(?:[A-Z]{1,5}|[A-Z]{1,5}\s+[^()]+|[^()]+\s+\([A-Z]{1,5}\))$/i; // Case-insensitive
-
+        const individualStockPattern = /^(?:[A-Z]{1,5}|[A-Z]{1,5}\s+[^()]+|[^()]+\s+\([A-Z]{1,5}\))$/i;
         const fixedIncomeTerms = [
             'treasury', 'treasuries', 't-bill', 'govt bond', 'government bond', 'us treasury',
             'government obligations', 'us government debt', 'sovereign debt (us)',
@@ -69,121 +61,112 @@ document.addEventListener('DOMContentLoaded', () => {
             'aggregate bond', 'agency mbs', 'investment grade'
         ];
 
-        // --- Prioritized Categorization Logic (Applied to combinedText) ---
+        // Helper to process a given text (either primaryExposureText or strategyText)
+        const processTextForCategories = (textToProcess) => {
+            if (!textToProcess) return;
 
-        // 1. Multi-Asset / Fund of Funds
-        if (multiAssetTerms.some(term => combinedText.includes(term))) return "Multi-Asset";
-        if (fundOfFundsTerms.some(term => combinedText.includes(term))) return "Fund of Funds";
-
-        // 2. Specific Types (Crypto, Volatility)
-        if (cryptoTerms.some(term => combinedText.includes(term)) && !combinedText.includes('crypto industry')) return "Crypto";
-        if (volatilityTerms.some(term => combinedText.includes(term))) return "Volatility";
-
-        // 3. COMBINED Fixed Income
-        if (fixedIncomeTerms.some(term => combinedText.includes(term))) {
-            if (multiAssetTerms.some(term => combinedText.includes(term))) {
-                 return "Multi-Asset"; // Ensure Multi-Asset check takes priority if keywords overlap
+            // if (multiAssetTerms.some(term => textToProcess.includes(term))) categories.add("Multi-Asset"); // Removed this line
+            if (fundOfFundsTerms.some(term => textToProcess.includes(term))) categories.add("Fund of Funds");
+            if (cryptoTerms.some(term => textToProcess.includes(term)) && !textToProcess.includes('crypto industry')) categories.add("Crypto");
+            if (volatilityTerms.some(term => textToProcess.includes(term))) categories.add("Volatility");
+            if (fixedIncomeTerms.some(term => textToProcess.includes(term))) categories.add("Fixed Income");
+            if (commodityTerms.some(term => textToProcess.includes(term))) categories.add("Commodities / Resources");
+            if (textToProcess === primaryExposureText && individualStockPattern.test(textToProcess)) categories.add("Individual Stocks / ETFs");
+            if (textToProcess.includes('single stock') && !textToProcess.includes('index')) categories.add("Individual Stocks / ETFs");
+            if (globalIntlEquityTerms.some(term => textToProcess.includes(term))) categories.add("Global / International Equity");
+            if (usEquityIndexTerms.some(term => textToProcess.includes(term))) categories.add("US Equity Indices");
+            if (sectorThematicTerms.some(term => textToProcess.includes(term))) categories.add("Sector / Thematic");
+            if (generalEquityTerms.some(term => textToProcess.includes(term))) {
+                // Add "General Equity" if "equity", "stock", or "shares" is mentioned.
+                // This allows an ETF like an international equity fund to also be "General Equity".
+                categories.add("General Equity");
             }
-            // console.warn(`Categorized as Fixed Income: "${originalExposure}" / "${originalStrategy}"`);
-            return "Fixed Income";
+        };
+
+        // Process exposure first, then strategy
+        processTextForCategories(primaryExposureText);
+        processTextForCategories(strategyText);
+
+        // If "Individual Stocks / ETFs" was added based on strategy's single stock keyword, ensure it's valid for primary exposure too if it's just a ticker
+        if (categories.has("Individual Stocks / ETFs") && strategyText.includes('single stock') && individualStockPattern.test(primaryExposureText)) {
+            // This condition is a bit redundant due to the primaryExposureText check already, but reinforces
+        } else if (individualStockPattern.test(primaryExposureText) && strategyText.includes(primaryExposureText)) {
+            // If primary exposure is just a ticker, and strategy mentions that ticker, it's likely an individual stock ETF
+            categories.add("Individual Stocks / ETFs");
         }
 
-        // ***** MOVED UP: Check for Commodities BEFORE Individual Stocks & Sector/Thematic *****
-        // 4. Commodities / Resources
-        if (commodityTerms.some(term => combinedText.includes(term))) {
-             // Check if it's already classified as Multi-Asset or Fund of Funds
-             if (!multiAssetTerms.some(term => combinedText.includes(term)) && !fundOfFundsTerms.some(term => combinedText.includes(term))) {
-                 // If a commodity term is present, categorize as Commodity.
-                 // The Sector/Thematic check later has safeguards against re-categorizing.
-                 return "Commodities / Resources";
-             }
+        // Refinement: If a more specific equity category exists, "General Equity" might be redundant unless it's multi-asset.
+        // For example, if "US Equity Indices" is present, "General Equity" is implied for that portion.
+        // However, per user request (e.g. IDVO), an ETF can be "International" and "General Equity".
+        // The current additive approach allows this. If "General Equity" is added alongside a specific equity type,
+        // it means the terms for "General Equity" were also met in either exposure or strategy.
+
+        if (categories.size === 0) {
+            categories.add("Other");
         }
-
-        // 5. Individual Stocks / ETFs (Runs after Commodities)
-        const lowerExposure = (originalExposure || '').toLowerCase().trim();
-        if (individualStockPattern.test(lowerExposure) || (combinedText.includes('single stock') && !combinedText.includes('index'))) {
-            // Ensure it wasn't already classified as something more specific like Multi-Asset or FoF
-            if (!multiAssetTerms.some(term => combinedText.includes(term)) && !fundOfFundsTerms.some(term => combinedText.includes(term))) {
-                 // console.warn(`Categorized as Individual Stock: "${originalExposure}"`);
-                 return "Individual Stocks / ETFs";
-            }
-        }
-
-        // 6. Global / International Equity
-        if (globalIntlEquityTerms.some(term => combinedText.includes(term))) return "Global / International Equity";
-
-        // 7. US Equity Indices
-        if (usEquityIndexTerms.some(term => combinedText.includes(term))) return "US Equity Indices";
-
-        // 8. Sector / Thematic (Now runs AFTER Commodities and Individual Stocks)
-        if (sectorThematicTerms.some(term => combinedText.includes(term))) {
-             // Ensure it wasn't already classified as something more specific
-             if (!multiAssetTerms.some(term => combinedText.includes(term)) &&
-                 !fundOfFundsTerms.some(term => combinedText.includes(term)) &&
-                 !fixedIncomeTerms.some(term => combinedText.includes(term)) && // Avoid fixed income overlap
-                 !commodityTerms.some(term => combinedText.includes(term)) && // Avoid commodity overlap
-                 !individualStockPattern.test((originalExposure || '').toLowerCase().trim())) { // Avoid individual stock overlap
-                 // console.warn(`Categorized as Sector/Thematic: "${originalExposure}" / "${originalStrategy}"`);
-                 return "Sector / Thematic";
-             }
-        }
-
-        // 9. General Equity (Last equity check)
-        if (generalEquityTerms.some(term => combinedText.includes(term))) return "General Equity";
-
-        // --- Default ---
-        // console.warn(`Uncategorized exposure/strategy: "${originalExposure}" / "${originalStrategy}" -> Defaulting to "Other"`);
-        return "Other";
+        return Array.from(categories);
     }
 
-    // --- Helper function to consolidate goal categories (NOW USES STRATEGY) ---
+    // --- Helper function to consolidate goal categories (REVISED LOGIC V10 - Consolidated Goals) ---
     function getConsolidatedGoal(originalGoal, originalStrategy) {
-        const combinedText = `${originalGoal || ''} ${originalStrategy || ''}`.toLowerCase().trim();
+        const categories = new Set();
+        const primaryGoalText = (originalGoal || '').toLowerCase().trim();
+        const strategyText = (originalStrategy || '').toLowerCase().trim();
+        const combinedText = primaryGoalText + ' ' + strategyText; // Combine for easier keyword checking
 
-        if (!combinedText) {
-            return originalGoal || "Other"; // Fallback if both are empty
-        }
+        // Define broader keyword sets for consolidated goals
+        const incomeTerms = ['income', 'distribution', 'yield'];
+        const growthTerms = ['growth', 'capital appreciation', 'appreciation'];
+        const riskMgmtTerms = ['risk management', 'hedge', 'mitigate', 'defensive', 'protective', 'capital preservation', 'preservation'];
+        const volatilityTerms = ['volatility', 'vix'];
+        const exposureTerms = ['exposure', 'access', 'track']; // General exposure terms
 
-        const hasIncome = combinedText.includes('income');
-        const hasGrowth = combinedText.includes('growth') || combinedText.includes('capital appreciation');
-        const hasRiskMgmt = combinedText.includes('risk management') || combinedText.includes('hedge') || combinedText.includes('mitigate') || combinedText.includes('defensive') || combinedText.includes('protective');
-        const hasExposure = combinedText.includes('exposure'); // Keep simple, often combined with income
-        const hasVolatility = combinedText.includes('volatility');
+        let hasIncome = incomeTerms.some(term => combinedText.includes(term));
+        let hasGrowth = growthTerms.some(term => combinedText.includes(term));
+        let hasRiskMgmt = riskMgmtTerms.some(term => combinedText.includes(term));
+        let hasVolatility = volatilityTerms.some(term => combinedText.includes(term));
+        let hasExposure = exposureTerms.some(term => combinedText.includes(term));
 
-        // Prioritize combined goals
+        // Prioritize combined goals first, then primary individual goals
         if (hasIncome && hasGrowth) {
-            return "Income & Growth/Appreciation";
-        }
-        if (hasIncome && hasRiskMgmt) {
-            return "Income & Risk Management";
-        }
-        if (hasIncome && hasExposure) {
-            // Check if it's primarily volatility exposure, which is more specific
-            if (hasVolatility) {
-                 return "Income & Volatility Exposure";
-            }
-            return "Income & Exposure";
-        }
-        if (hasIncome && hasVolatility) { // Catch volatility even if exposure keyword isn't present
-             return "Income & Volatility Exposure";
-        }
-
-        // Single goals
-        if (hasIncome) {
-            return "Income";
-        }
-        if (hasGrowth) {
-            return "Growth/Appreciation"; // Add standalone Growth category
-        }
+            categories.add("Balanced (Income & Growth)");
+            // If it's balanced, we might not need to add individual Income or Growth unless explicitly desired
+            // For now, let's assume Balanced is sufficient and clear.
+        } else if (hasIncome) {
+            categories.add("Income");
+        } else if (hasGrowth) {
+            categories.add("Growth");
+        } 
+        // Risk Management can be a standalone goal or complementary
         if (hasRiskMgmt) {
-            return "Risk Management"; // Add standalone Risk Management category
-        }
-        if (hasVolatility) {
-            return "Volatility Exposure"; // Add standalone Volatility category
+            categories.add("Capital Preservation / Risk Mgmt");
         }
 
-        // Fallback to original or Other
-        return originalGoal || "Other";
+        // Specific Exposure if not already covered by a primary goal like Income/Growth
+        // And if it's not primarily a risk management strategy (which is now a primary category)
+        if (categories.size === 0 || (!hasIncome && !hasGrowth && !categories.has("Capital Preservation / Risk Mgmt"))) {
+            if (hasVolatility) {
+                categories.add("Specific Exposure (e.g., Volatility)");
+            } else if (hasExposure) {
+                categories.add("Specific Exposure");
+            }
+        }
+
+        // Fallback
+        if (categories.size === 0) {
+            if (originalGoal && originalGoal.trim() !== '') {
+                // Attempt to use a cleaned-up version of the original goal if it's somewhat standard
+                const cleanedOriginalGoal = originalGoal.trim();
+                if (['Income', 'Growth', 'Capital Preservation', 'Balanced'].includes(cleanedOriginalGoal)) {
+                    categories.add(cleanedOriginalGoal);
+                } else {
+                    categories.add("Other/Unique"); // More descriptive than just "Other"
+                }
+            } else {
+                categories.add("Other/Unique");
+            }
+        }
+        return Array.from(categories);
     }
 
     // Populate filter dropdowns based on data
@@ -200,11 +183,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         etfData.forEach(etf => {
             // Pass both exposure and strategy to the consolidation function
-            const consolidatedExposure = getConsolidatedExposure(etf.exposure, etf.strategy);
-            exposures.add(consolidatedExposure);
+            const exposureCategories = getConsolidatedExposure(etf.exposure, etf.strategy);
+            exposureCategories.forEach(cat => exposures.add(cat)); // Add each category from the array
+
             // *** Pass strategy to getConsolidatedGoal ***
-            const consolidatedGoal = getConsolidatedGoal(etf.goal, etf.strategy);
-            goals.add(consolidatedGoal);
+            const goalCategories = getConsolidatedGoal(etf.goal, etf.strategy);
+            goalCategories.forEach(cat => goals.add(cat)); // Add each category from the array
+
             issuers.add(etf.issuer);
         });
 
@@ -256,12 +241,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const filteredETFs = etfData.filter(etf => {
             const nameMatch = etf.name.toLowerCase().includes(searchTerm) || etf.ticker.toLowerCase().includes(searchTerm);
-            // Pass both exposure and strategy to the consolidation function
-            const consolidatedExposure = getConsolidatedExposure(etf.exposure, etf.strategy);
-            const exposureMatch = !selectedExposure || consolidatedExposure === selectedExposure;
-            // *** Pass strategy to getConsolidatedGoal ***
-            const consolidatedGoal = getConsolidatedGoal(etf.goal, etf.strategy);
-            const goalMatch = !selectedGoal || consolidatedGoal === selectedGoal;
+            
+            const etfExposureCategories = getConsolidatedExposure(etf.exposure, etf.strategy);
+            const exposureMatch = !selectedExposure || etfExposureCategories.includes(selectedExposure);
+
+            const etfGoalCategories = getConsolidatedGoal(etf.goal, etf.strategy);
+            const goalMatch = !selectedGoal || etfGoalCategories.includes(selectedGoal);
+
             const frequencyMatch = !selectedFrequency || etf.distributionFrequency === selectedFrequency;
             const issuerMatch = !selectedIssuer || etf.issuer === selectedIssuer;
 
