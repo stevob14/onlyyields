@@ -35,42 +35,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- Helper function to consolidate exposure categories (REVISED LOGIC V9 - Multi-category, No Multi-Asset) ---
+    // --- Helper function to consolidate exposure categories (REVISED LOGIC V10 - More Precise Fixed Income Detection) ---
     function getConsolidatedExposure(originalExposure, originalStrategy) {
         const categories = new Set();
         const primaryExposureText = (originalExposure || '').toLowerCase().trim();
         const strategyText = (originalStrategy || '').toLowerCase().trim();
 
         // Define Keyword Sets
-        // const multiAssetTerms = ['multi-asset', 'equity and fixed income', 'balanced', 'asset allocation']; // Removed this line
         const fundOfFundsTerms = ['fund of funds', 'multiple etfs', 'five yieldmax etfs', 'etf portfolio', 'etf of etfs'];
-        const cryptoTerms = ['crypto', 'bitcoin', 'ether', 'digital asset', 'ethereum', 'cryptocurrency', 'blockchain']; // Removed 'crypto industry' for broader crypto match
+        const cryptoTerms = ['crypto', 'bitcoin', 'ether', 'digital asset', 'ethereum', 'cryptocurrency', 'blockchain']; 
         const volatilityTerms = ['volatility', 'vix'];
         const commodityTerms = ['gold', 'silver', 'oil', 'natural gas', 'commodities', 'metals', 'agriculture', 'resources'];
         const globalIntlEquityTerms = ['global equity', 'international equity', 'emerging markets', 'developed markets', 'world equity', 'ex-us', 'acwi', 'international'];
         const usEquityIndexTerms = ['s&p 500', 'nasdaq', 'russell', 'dow jones', 'us equity index', 'large cap', 'mid cap', 'small cap', 'total stock market'];
-        const sectorThematicTerms = ['sector', 'thematic', 'magnificent', 'ai', 'tech', 'semiconductor', 'health care', 'energy', 'financials', 'utilities', 'real estate', 'infrastructure', 'clean energy', 'biotech', 'crypto industry']; // Added 'crypto industry' here
+        const sectorThematicTerms = ['sector', 'thematic', 'magnificent', 'ai', 'tech', 'semiconductor', 'health care', 'energy', 'financials', 'utilities', 'real estate', 'infrastructure', 'clean energy', 'biotech', 'crypto industry']; 
         const generalEquityTerms = ['equity', 'stock', 'shares'];
         const individualStockPattern = /^(?:[A-Z]{1,5}|[A-Z]{1,5}\s+[^()]+|[^()]+\s+\([A-Z]{1,5}\))$/i;
+        
+        // More precise fixed income terms with word boundary checks
         const fixedIncomeTerms = [
-            'treasury', 'treasuries', 't-bill', 'govt bond', 'government bond', 'us treasury',
-            'government obligations', 'us government debt', 'sovereign debt (us)',
-            'tips', 'inflation-protected securities', 'inflation-linked bonds', 'treasury inflation protected',
-            'cash', 'ultra short duration', 'short term bond', 'money market', 'us dollar',
-            'international bond', 'global bond', 'ex-us bond', 'world bond', 'emerging market debt',
-            'bond', 'fixed income', 'debt', 'credit', 'corporate', 'high yield', 'municipal',
-            'aggregate bond', 'agency mbs', 'investment grade'
+            '\\btreasury\\b', '\\btreasuries\\b', '\\bt-bill\\b', '\\bgovt bond\\b', '\\bgovernment bond\\b', '\\bus treasury\\b',
+            '\\bgovernment obligations\\b', '\\bus government debt\\b', '\\bsovereign debt\\b',
+            '\\btips\\b', '\\binflation-protected securities\\b', '\\binflation-linked bonds\\b', '\\btreasury inflation protected\\b',
+            '\\bcash\\b', '\\bultra short duration\\b', '\\bshort term bond\\b', '\\bmoney market\\b', '\\bus dollar\\b',
+            '\\binternational bond\\b', '\\bglobal bond\\b', '\\bex-us bond\\b', '\\bworld bond\\b', '\\bemerging market debt\\b',
+            '\\bbond\\b', '\\bfixed income\\b', '\\bdebt\\b', '\\bcredit\\b', '\\bcorporate bond\\b', '\\bhigh yield\\b', '\\bmunicipal\\b',
+            '\\baggregate bond\\b', '\\bagency mbs\\b', '\\binvestment grade\\b'
         ];
 
         // Helper to process a given text (either primaryExposureText or strategyText)
         const processTextForCategories = (textToProcess) => {
             if (!textToProcess) return;
 
-            // if (multiAssetTerms.some(term => textToProcess.includes(term))) categories.add("Multi-Asset"); // Removed this line
             if (fundOfFundsTerms.some(term => textToProcess.includes(term))) categories.add("Fund of Funds");
             if (cryptoTerms.some(term => textToProcess.includes(term)) && !textToProcess.includes('crypto industry')) categories.add("Crypto");
             if (volatilityTerms.some(term => textToProcess.includes(term))) categories.add("Volatility");
-            if (fixedIncomeTerms.some(term => textToProcess.includes(term))) categories.add("Fixed Income");
+            
+            // Use regex with word boundaries for fixed income detection to avoid false positives
+            if (fixedIncomeTerms.some(term => new RegExp(term, 'i').test(textToProcess))) categories.add("Fixed Income");
+            
             if (commodityTerms.some(term => textToProcess.includes(term))) categories.add("Commodities / Resources");
             if (textToProcess === primaryExposureText && individualStockPattern.test(textToProcess)) categories.add("Individual Stocks / ETFs");
             if (textToProcess.includes('single stock') && !textToProcess.includes('index')) categories.add("Individual Stocks / ETFs");
@@ -78,8 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (usEquityIndexTerms.some(term => textToProcess.includes(term))) categories.add("US Equity Indices");
             if (sectorThematicTerms.some(term => textToProcess.includes(term))) categories.add("Sector / Thematic");
             if (generalEquityTerms.some(term => textToProcess.includes(term))) {
-                // Add "General Equity" if "equity", "stock", or "shares" is mentioned.
-                // This allows an ETF like an international equity fund to also be "General Equity".
                 categories.add("General Equity");
             }
         };
@@ -95,12 +96,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // If primary exposure is just a ticker, and strategy mentions that ticker, it's likely an individual stock ETF
             categories.add("Individual Stocks / ETFs");
         }
-
-        // Refinement: If a more specific equity category exists, "General Equity" might be redundant unless it's multi-asset.
-        // For example, if "US Equity Indices" is present, "General Equity" is implied for that portion.
-        // However, per user request (e.g. IDVO), an ETF can be "International" and "General Equity".
-        // The current additive approach allows this. If "General Equity" is added alongside a specific equity type,
-        // it means the terms for "General Equity" were also met in either exposure or strategy.
 
         if (categories.size === 0) {
             categories.add("Other");
